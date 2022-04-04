@@ -1,0 +1,7 @@
+## Interface: 90100
+## Title: Bad Vulpera
+## Author: Kalka
+## Version: 9.2.0
+## Notes: Getting hit? On a dungeon? Bad fox!
+
+main.lua
