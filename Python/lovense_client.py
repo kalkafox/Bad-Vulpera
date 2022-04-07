@@ -31,13 +31,15 @@ async def run_toy(request, api_token, toy_data, color_value):
 patterns_magic = [
     [20, 10, 20, 10, 5, 10, 5, 10, 5, 10],
     [10, 20, 15, 18, 19, 20, 19, 15, 10],
-    [5, 10, 10, 10, 5, 10, 10, 10, 20, 10]
+    [10, 10, 10, 10, 5, 10, 10, 10, 20, 20]
 ]
 
 patterns_melee = [
-    [5, 5, 5],
-    [5, 10, 5],
-    [10, 5, 10]
+    [20, 10, 20],
+    [20, 10, 20],
+    [10, 15, 10],
+    [20,15,10,20],
+    [10,15,10,5,10,20]
 ]
 
 patterns_heal = [
@@ -48,8 +50,9 @@ patterns_heal = [
 
 patterns_environmental = [
     [20,15,20,15,20,15,20,15],
-    [15,20,19],
-    [20,1,20,1,20,1,20,10,20,1]
+    [15,20,15,20,15,20,10,20],
+    [20,1,20,1,20,1,20,10,20,1],
+    [20,15,20,10,5,6,8,10,13,18]
 ]
 
 async def main():
@@ -130,7 +133,13 @@ async def main():
                         remove('uid.bin')
                         redo = True
                         break
+
+
+
                     img = ImageGrab.grab(bbox=(0,0,40,10))
+
+                    img_missing_health = img.getpixel((0,0))
+
                     img_dmg = img.getpixel((11,0))
                     # Get the pixel of the health value
                     # 0 is red, 1 is green, 2 is blue
@@ -142,15 +151,25 @@ async def main():
                     if timeout < time.time():
                         data = None
                         try:
+                            if img_missing_health[0] > 0 and img_missing_health == (img_missing_health[0], 0, 0):
+                                data = r.post('https://api.lovense.com/api/lan/v2/command', data={
+                                    'token': api_token,
+                                    'uid': toy_data['uid'],
+                                    'command': 'Function',
+                                    'action': f'Vibrate:{int((img_missing_health[0] / 255) * 20)}',
+                                    'strength': ';'.join(str(e) for e in random.choice(patterns_melee)),
+                                    'timeSec': 2,
+                                    'apiVer': 1
+                                })
                             if color_value > 0 and img_dmg == (0, 0, color_value):
                                 print("Magic damage")
                                 data = r.post('https://api.lovense.com/api/lan/v2/command', data={
                                     'token': api_token,
                                     'uid': toy_data['uid'],
                                     'command': 'Pattern',
-                                    'rule': 'V:1;F:v;S:100',
+                                    'rule': 'V:1;F:v;S:200',
                                     'strength': ';'.join(str(e) for e in random.choice(patterns_melee)),
-                                    'timeSec': 1,
+                                    'timeSec': 3,
                                     'apiVer': 1
                                 })
                                 timeout = time.time() + 1
@@ -160,9 +179,9 @@ async def main():
                                     'token': api_token,
                                     'uid': toy_data['uid'],
                                     'command': 'Pattern',
-                                    'rule': 'V:1;F:v;S:100',
+                                    'rule': 'V:1;F:v;S:200',
                                     'strength': ';'.join(str(e) for e in random.choice(patterns_magic)),
-                                    'timeSec': 1,
+                                    'timeSec': 3,
                                     'apiVer': 1
                                 })
                                 timeout = time.time() + 1
@@ -172,37 +191,37 @@ async def main():
                                     'token': api_token,
                                     'uid': toy_data['uid'],
                                     'command': 'Pattern',
-                                    'rule': 'V:1;F:v;S:100',
+                                    'rule': 'V:1;F:v;S:200',
                                     'strength': ';'.join(str(e) for e in random.choice(patterns_environmental)),
-                                    'timeSec': 1,
+                                    'timeSec': 3,
                                     'apiVer': 1
                                 })
                                 timeout = time.time() + 1
-                            if heal_value[1] > 0 and heal_value[2] > 0 and heal_value[0] == 0:
-                                if current_heal_value != heal_value:
-                                    print("Heal")
-                                    data = r.post('https://api.lovense.com/api/lan/v2/command', data={
-                                        'token': api_token,
-                                        'uid': toy_data['uid'],
-                                        'command': "Pattern",
-                                        'rule': "V:1;F:v;S:100",
-                                        'strength': ";".join(str(e) for e in random.choice(patterns_heal)),
-                                        'timeSec': 1,
-                                        'apiVer': 1
-                                    })
-                                    # data = r.post('https://api.lovense.com/api/lan/v2/command', data={
-                                    #     'token': api_token,
-                                    #     'uid': toy_data['uid'],
-                                    #     'command': 'Function',
-                                    #     'action': f'Vibrate:{int((heal_value[1] / 255) * 20)}',
-                                    #     #'strength': ','.join(str(e) for e in random.choice(patterns_magic)),
-                                    #     'timeSec': 1,
-                                    #     'toy': "f0decd6bb7f0",
-                                    #     'apiVer': 1
-                                    # })
-                                    print((heal_value[1] / 255) * 20)
-                                    print(toy_data)
-                                    print(data.content)
+                            # if heal_value[1] > 0 and heal_value[2] > 0 and heal_value[0] == 0:
+                            #     if current_heal_value != heal_value:
+                            #         print("Heal")
+                            #         data = r.post('https://api.lovense.com/api/lan/v2/command', data={
+                            #             'token': api_token,
+                            #             'uid': toy_data['uid'],
+                            #             'command': "Pattern",
+                            #             'rule': "V:1;F:v;S:100",
+                            #             'strength': ";".join(str(e) for e in random.choice(patterns_heal)),
+                            #             'timeSec': 1,
+                            #             'apiVer': 1
+                            #         })
+                            #         # data = r.post('https://api.lovense.com/api/lan/v2/command', data={
+                            #         #     'token': api_token,
+                            #         #     'uid': toy_data['uid'],
+                            #         #     'command': 'Function',
+                            #         #     'action': f'Vibrate:{int((heal_value[1] / 255) * 20)}',
+                            #         #     #'strength': ','.join(str(e) for e in random.choice(patterns_magic)),
+                            #         #     'timeSec': 1,
+                            #         #     'toy': "f0decd6bb7f0",
+                            #         #     'apiVer': 1
+                            #         # })
+                            #         print((heal_value[1] / 255) * 20)
+                            #         print(toy_data)
+                            #         print(data.content)
                             if data is not None:
                                 if json.loads(data.content)['code'] == 507:
                                     print("Lovense App is offline. Retrying...")

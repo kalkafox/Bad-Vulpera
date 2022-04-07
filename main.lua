@@ -5,8 +5,8 @@ local HF = CreateFrame("Frame", "UwU_Meter", UIParent);
 local DF = CreateFrame("Frame", "Fucc_Meter", UIParent);
 local PF = CreateFrame("Frame", "Heal_Meter", UIParent);
 
-DF.modifier = 0.5
-PF.modifier = 0.5
+DF.modifier = 2 
+PF.modifier = DF.modifier
 
 DF.r = 0
 DF.g = 0
