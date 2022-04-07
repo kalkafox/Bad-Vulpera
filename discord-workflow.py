@@ -12,15 +12,19 @@ class BuildStatus():
 
     def __init__(self, token):
         self.app.add_routes(self.routes)
-        web.run_app(self.app)
+        try:
+            web.run_app(self.app)
+        except KeyboardInterrupt:
+            pass
 
-    @routes.get('/github')
+    @routes.post('/github')
     async def github(self, request):
+        self.l.log("[green] Got GitHub response.")
         return web.Response(text="OK!")
 
 
 def main():
-    bs = BuildStatus()
+    bs = BuildStatus('token')
 
 main()
 
