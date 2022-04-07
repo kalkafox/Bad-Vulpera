@@ -151,16 +151,16 @@ async def main():
                     if timeout < time.time():
                         data = None
                         try:
-                            if img_missing_health[0] > 0 and img_missing_health == (img_missing_health[0], 0, 0):
-                                data = r.post('https://api.lovense.com/api/lan/v2/command', data={
-                                    'token': api_token,
-                                    'uid': toy_data['uid'],
-                                    'command': 'Function',
-                                    'action': f'Vibrate:{int((img_missing_health[0] / 255) * 20)}',
-                                    'strength': ';'.join(str(e) for e in random.choice(patterns_melee)),
-                                    'timeSec': 2,
-                                    'apiVer': 1
-                                })
+                            # if img_missing_health[0] > 0 and img_missing_health == (img_missing_health[0], 0, 0):
+                            #     data = r.post('https://api.lovense.com/api/lan/v2/command', data={
+                            #         'token': api_token,
+                            #         'uid': toy_data['uid'],
+                            #         'command': 'Function',
+                            #         'action': f'Vibrate:{int((img_missing_health[0] / 255) * 20)}',
+                            #         'strength': ';'.join(str(e) for e in random.choice(patterns_melee)),
+                            #         'timeSec': 2,
+                            #         'apiVer': 1
+                            #     })
                             if color_value > 0 and img_dmg == (0, 0, color_value):
                                 print("Magic damage")
                                 data = r.post('https://api.lovense.com/api/lan/v2/command', data={
