@@ -1,0 +1,21 @@
+[package]
+name = "bad-vulpera-server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+warp = {version = "*", features = ["tls"]}
+tokio = {version = "*", features = ["full"]}
+serde = {version = "*", features = ["derive"]}
+serde_json = {version = "*", features = ["raw_value"]}
+reqwest = {version = "*", features = ["json"]}
+mongodb = {version = "*"}
+rand = {version = "*"}
+blake3 = {version = "*"}
+# Use cumulus from https://github.com/kalkafox/Cumulus/tree/main/rust/cumulus
+cumulus = {version = "*", git = "https://github.com/kalkafox/Cumulus.git", branch = "main"}
+hex = {version = "*"}
+console = {version = "*"}
+
