@@ -40,7 +40,7 @@ const LOVENSE_URL: &str = "https://api.lovense-api.com/api/lan";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let db = connect_db().await?;
+    connect_db().await?;
 
     let request_qr_code = warp::path!("requestQrCode")
         .and(warp::post())
@@ -149,12 +149,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let routes = request_qr_code;
 
-    warp::serve(routes).run(([127, 0, 0, 1], 3030)).await;
+    warp::serve(routes).run(([0, 0, 0, 0], 3030)).await;
 
     Ok(())
 }
 
-async fn connect_db() -> Result<Database, Box<dyn std::error::Error>> {
+async fn connect_db() -> Result<(), Box<dyn std::error::Error>> {
     let mongodb_uri = std::env::var("MONGODB_URI")?;
 
     let client = mongodb::Client::with_uri_str(&mongodb_uri).await?;
@@ -202,5 +202,5 @@ async fn connect_db() -> Result<Database, Box<dyn std::error::Error>> {
         }
     }
 
-    Ok(db)
+    Ok(())
 }
